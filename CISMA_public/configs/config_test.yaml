@@ -1,0 +1,97 @@
+only_test: True
+validate: True
+# choose one from "eq_pow_sc", "exp_pow_learning_sc", "inexp_pow_learning_sc", "fusion_scheme", "single_user"
+scheme_tx: eq_pow_sc
+# choose one from "direct_decoding", "sic_ml", "defusion_sic", "sic_sccoding", "direct_decoding_with_side_info", "sic_sccoding_unique_cancellation", 
+# "two_stage_decoding_with_side_info"， "mdma", "mdma_pearson"
+scheme_rx: direct_decoding_with_side_info
+detect_symbol_n: False
+detect_symbol_f: False
+use_side_info: True
+use_perfect_side_info: False
+use_cross_attention: True
+use_mi_loss: True
+use_af_module: True
+mine_esti: False
+orthogonal: False
+note: testing
+
+data:
+  dataset: mnist
+  mnist:
+    root: 'path for mnist dataset'
+    train_val_split: [50000, 10000]
+    H: 28
+    W: 28
+    C: 3
+  cifar:
+    root: 'path for cifar dataset'
+    train_val_split: [45000, 5000]
+    H: 32
+    W: 32
+    C: 3
+    pair_mode: random # random or correlated
+  kitti:
+    root: "path for kitti dataset"
+    H: 128
+    W: 256
+    C: 3
+  cityscape:
+    root: 'path for cityscape dataset'
+    H: 128
+    W: 256
+    C: 3
+  batch_size: 64
+  regroup_every_training_epoch: 1
+  color_seed: 1
+  max_snr: 30
+  min_snr: -5
+  train_max_snr_interval: 10
+  train_min_snr_interval: 1
+  test_noise: True
+  test_snr_interval: 5
+  val_seed: 5678
+  train_fix_snr: 0
+# mnist/cifar: M = [4,8,12,16,20,24], KITTI: M = [64, 96, 128, 160, 192, 224]
+# mdma mnist/cifar: M = [2, 4, 6, 8, 10, 12], KITTI: M = [32, 48, 64, 80, 96, 112]
+model:
+  N: 256
+  M: 8
+  M_cor: 8
+  heads: 4
+  embed_dim: 128
+# Channel param
+channel:
+  mode: awgn
+  channel_esti: True
+  power_norm: True
+mimo:
+  scheme: svd
+  Nt: 4
+  Nr: 4
+optimizer:
+  lr: 0.001
+metrics:
+  similarity: ssim
+training:
+  seed: 1234
+  num_epochs: 100
+  distortion_metric: MSE
+  pf_regular: True
+  load_pretrained: False
+  model_dir: "path for the first stage saved model"
+  hyperpara:
+    lr: 1e-4
+    aux_lr: 1e-3
+    alpha: 1
+    beta: 1
+    pf_regu_f: 0.1
+    shared_loss_coeff: 0.1
+    mi_loss_coeff: 0.1
+testing:
+  model_dir: "path for trained model"
+  power_allo_test:
+    test_max_snr_interval: 15
+    test_min_snr_interval: 0
+    csi_near: 15
+
